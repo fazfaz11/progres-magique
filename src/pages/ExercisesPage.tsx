@@ -1,20 +1,44 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ExerciseGrid } from '@/components/ExerciseGrid';
+import { ExerciseTile } from '@/components/ExerciseTile';
 import { ProgressBar } from '@/components/ProgressBar';
 import { Confetti } from '@/components/Confetti';
 import { useStudents } from '@/hooks/useStudents';
 import { getSubjectById } from '@/data/subjects';
-import { Button } from '@/components/ui/button';
-import { ArrowLeft, User } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { ArrowLeft, Info } from 'lucide-react';
+import { useState } from 'react';
+
+const sectionColors: Record<string, { bg: string; headerBg: string; textColor: string }> = {
+  'transpositions': { bg: 'bg-section-pink/30', headerBg: 'bg-section-pink/50', textColor: 'text-pink-700' },
+  'jeux-lecture-s': { bg: 'bg-section-purple/30', headerBg: 'bg-section-purple/50', textColor: 'text-purple-700' },
+  'jeux-lecture-l': { bg: 'bg-section-blue/20', headerBg: 'bg-section-blue/40', textColor: 'text-cyan-700' },
+  'jeux-lecture-p': { bg: 'bg-section-violet/20', headerBg: 'bg-section-violet/40', textColor: 'text-violet-700' },
+  'lecture-verifix': { bg: 'bg-section-green/30', headerBg: 'bg-section-green/50', textColor: 'text-green-700' },
+  'recherche-internet': { bg: 'bg-section-purple/30', headerBg: 'bg-section-purple/50', textColor: 'text-purple-700' },
+  'defis-word': { bg: 'bg-section-blue/20', headerBg: 'bg-section-blue/40', textColor: 'text-cyan-700' },
+  'defis-diaporama': { bg: 'bg-section-violet/20', headerBg: 'bg-section-violet/40', textColor: 'text-violet-700' },
+  'reproduction-couleurs': { bg: 'bg-section-pink/30', headerBg: 'bg-section-pink/50', textColor: 'text-pink-700' },
+  'reproduction-regle': { bg: 'bg-section-blue/20', headerBg: 'bg-section-blue/40', textColor: 'text-cyan-700' },
+  'additions': { bg: 'bg-section-green/30', headerBg: 'bg-section-green/50', textColor: 'text-green-700' },
+  'soustractions': { bg: 'bg-section-orange/30', headerBg: 'bg-section-orange/50', textColor: 'text-orange-700' },
+  'multiplications': { bg: 'bg-section-purple/30', headerBg: 'bg-section-purple/50', textColor: 'text-purple-700' },
+  'divisions': { bg: 'bg-section-blue/20', headerBg: 'bg-section-blue/40', textColor: 'text-cyan-700' },
+  'problemes-main': { bg: 'bg-section-yellow/30', headerBg: 'bg-section-yellow/50', textColor: 'text-yellow-700' },
+  'masses': { bg: 'bg-section-orange/30', headerBg: 'bg-section-orange/50', textColor: 'text-orange-700' },
+  'longueurs': { bg: 'bg-section-green/30', headerBg: 'bg-section-green/50', textColor: 'text-green-700' },
+  'capacites': { bg: 'bg-section-blue/20', headerBg: 'bg-section-blue/40', textColor: 'text-cyan-700' },
+  'heure-main': { bg: 'bg-section-cyan/30', headerBg: 'bg-section-cyan/50', textColor: 'text-cyan-700' },
+  'je-rends-monnaie': { bg: 'bg-section-pink/30', headerBg: 'bg-section-pink/50', textColor: 'text-pink-700' },
+  'soldes-1-etoile': { bg: 'bg-section-blue/20', headerBg: 'bg-section-blue/40', textColor: 'text-blue-700' },
+  'soldes-2-etoiles': { bg: 'bg-section-orange/30', headerBg: 'bg-section-orange/50', textColor: 'text-orange-700' },
+  'promo': { bg: 'bg-section-purple/30', headerBg: 'bg-section-purple/50', textColor: 'text-purple-700' },
+};
 
 const ExercisesPage: React.FC = () => {
   const navigate = useNavigate();
   const { studentId, subjectId } = useParams<{ studentId: string; subjectId: string }>();
   const { getStudent, getProgress, toggleExercise } = useStudents();
   const [showConfetti, setShowConfetti] = useState(false);
-  const [previousPercentage, setPreviousPercentage] = useState(0);
 
   const student = getStudent(studentId || '');
   const subject = getSubjectById(subjectId || '');
@@ -34,7 +58,6 @@ const ExercisesPage: React.FC = () => {
     const wasCompleted = completedExercises.includes(exerciseId);
     toggleExercise(student.id, subject.id, exerciseId);
     
-    // Check if we crossed a 10% milestone
     if (!wasCompleted) {
       const newCompleted = completedExercises.length + 1;
       const total = progress.total;
@@ -48,124 +71,113 @@ const ExercisesPage: React.FC = () => {
     }
   };
 
-  const colorClasses: Record<string, string> = {
-    'pastel-pink': 'bg-pastel-pink',
-    'pastel-blue': 'bg-pastel-blue',
-    'pastel-green': 'bg-pastel-green',
-    'pastel-yellow': 'bg-pastel-yellow',
-    'pastel-purple': 'bg-pastel-purple',
-    'pastel-orange': 'bg-pastel-orange',
-    'pastel-cyan': 'bg-pastel-cyan',
-    'pastel-rose': 'bg-pastel-rose',
+  const getCategoryCompleted = (categoryId: string) => {
+    const category = subject.categories.find(c => c.id === categoryId);
+    if (!category) return 0;
+    return category.exercises.filter(e => completedExercises.includes(e.id)).length;
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen flex flex-col bg-background font-display">
       <Confetti isActive={showConfetti} />
       
       {/* Header */}
-      <header className={`${colorClasses[subject.color]} border-b border-border sticky top-0 z-10`}>
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="icon"
+      <header className="bg-card border-b border-gray-100 sticky top-0 z-50 px-6 py-4 shadow-sm">
+        <div className="max-w-[1400px] mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-8">
+            <button 
               onClick={() => navigate(`/student/${studentId}/subjects`)}
-              className="rounded-full bg-card/50 hover:bg-card"
+              className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors group"
             >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-            
-            <div className="flex items-center gap-3">
-              <span className="text-4xl">{subject.icon}</span>
-              <div>
-                <h1 className="text-xl font-bold text-foreground">{subject.name}</h1>
-                <p className="text-sm text-muted-foreground">
-                  {student.firstName} {student.lastName}
-                </p>
-              </div>
-            </div>
-            
-            <div className="ml-auto flex items-center gap-2 bg-card/60 px-4 py-2 rounded-full">
-              <span className="font-bold text-primary">{progress.completed}</span>
-              <span className="text-muted-foreground">/</span>
-              <span className="font-medium text-foreground">{progress.total}</span>
+              <ArrowLeft className="w-5 h-5 font-bold" />
+              <span className="font-bold uppercase tracking-wider text-sm">Retour</span>
+            </button>
+            <div className="flex flex-col">
+              <h1 className="text-2xl font-black tracking-tighter text-foreground uppercase leading-none">AUTONOMIE</h1>
+              <h2 className="text-primary text-xl font-black tracking-tight uppercase leading-none">{subject.name}</h2>
             </div>
           </div>
           
-          {/* Subject Progress */}
-          <div className="mt-4">
+          <div className="flex-grow max-w-2xl mx-12">
+            <div className="flex justify-between items-end mb-2">
+              <span className="text-xs font-black text-gray-500 uppercase tracking-widest">Progression Globale</span>
+            </div>
             <ProgressBar percentage={progress.percentage} showStars={true} size="md" />
+          </div>
+          
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-xs font-bold text-gray-400 uppercase">Élève</p>
+              <p className="text-sm font-black text-foreground">{student.firstName} {student.lastName.charAt(0)}.</p>
+            </div>
+            <div className="w-10 h-10 rounded-full bg-completed border-2 border-white shadow-sm flex items-center justify-center text-white font-black">
+              {student.firstName.charAt(0)}
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Categories */}
-      <main className="container mx-auto px-4 py-6">
-        {subject.categories.length > 1 ? (
-          <Tabs defaultValue={subject.categories[0].id} className="w-full">
-            <TabsList className="w-full flex flex-wrap h-auto gap-2 bg-transparent mb-6">
-              {subject.categories.map((category) => {
-                const categoryCompleted = category.exercises.filter(e => 
-                  completedExercises.includes(e.id)
-                ).length;
-                
-                return (
-                  <TabsTrigger
-                    key={category.id}
-                    value={category.id}
-                    className="flex-1 min-w-[150px] data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                  >
-                    <span>{category.name}</span>
-                    <span className="ml-2 text-xs opacity-75">
-                      {categoryCompleted}/{category.exercises.length}
-                    </span>
-                  </TabsTrigger>
-                );
-              })}
-            </TabsList>
-            
-            {subject.categories.map((category) => (
-              <TabsContent key={category.id} value={category.id}>
-                <div className="mb-4">
-                  <h2 className="text-lg font-bold text-foreground">{category.name}</h2>
-                  <p className="text-sm text-muted-foreground">{category.description}</p>
+      {/* Main Content - Grid of Categories */}
+      <main className="flex-grow w-full max-w-[1440px] mx-auto grid overflow-hidden" 
+        style={{ 
+          gridTemplateColumns: `repeat(${Math.min(subject.categories.length, 3)}, 1fr)`,
+          height: 'calc(100vh - 140px)'
+        }}
+      >
+        {subject.categories.map((category, index) => {
+          const colors = sectionColors[category.id] || { 
+            bg: 'bg-section-purple/30', 
+            headerBg: 'bg-section-purple/50', 
+            textColor: 'text-purple-700' 
+          };
+          const categoryCompleted = getCategoryCompleted(category.id);
+          
+          return (
+            <section 
+              key={category.id} 
+              className={`flex flex-col ${index < subject.categories.length - 1 ? 'border-r border-black/5' : ''} ${colors.bg}`}
+            >
+              <div className={`section-header ${colors.headerBg}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xl font-black text-foreground uppercase tracking-tight">{category.name}</h3>
+                  <span className={`bg-white/50 px-3 py-1 rounded-full text-xs font-black ${colors.textColor}`}>
+                    {categoryCompleted}/{category.exercises.length}
+                  </span>
                 </div>
-                <ExerciseGrid
-                  exercises={category.exercises}
-                  completedExercises={completedExercises}
-                  onToggleExercise={handleToggleExercise}
-                />
-              </TabsContent>
-            ))}
-          </Tabs>
-        ) : (
-          <div>
-            <div className="mb-4">
-              <h2 className="text-lg font-bold text-foreground">{subject.categories[0].name}</h2>
-              <p className="text-sm text-muted-foreground">{subject.categories[0].description}</p>
-            </div>
-            <ExerciseGrid
-              exercises={subject.categories[0].exercises}
-              completedExercises={completedExercises}
-              onToggleExercise={handleToggleExercise}
-            />
-          </div>
-        )}
+                <p className={`text-xs font-bold uppercase opacity-60 ${colors.textColor}`}>{category.description}</p>
+              </div>
+              
+              <div className="section-content custom-scrollbar">
+                <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
+                  {category.exercises.map((exercise) => (
+                    <ExerciseTile
+                      key={exercise.id}
+                      id={exercise.id}
+                      label={exercise.label}
+                      isCompleted={completedExercises.includes(exercise.id)}
+                      onToggle={() => handleToggleExercise(exercise.id)}
+                    />
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        })}
       </main>
 
       {/* Footer Legend */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-card border-t border-border py-3">
-        <div className="container mx-auto px-4 flex items-center justify-center gap-6 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-completed" />
-            <span>TERMINÉ</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-muted border border-border" />
-            <span>À FAIRE</span>
-          </div>
-          <span className="text-xs">Clique sur un numéro pour valider ton exercice</span>
+      <footer className="bg-card border-t border-gray-100 p-4 flex justify-center items-center gap-6">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded bg-completed shadow-inner border border-completed-dark"></div>
+          <span className="text-xs font-bold text-gray-500 uppercase">Terminé</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 rounded bg-white border border-gray-200 border-b-4 border-b-gray-100"></div>
+          <span className="text-xs font-bold text-gray-500 uppercase">À faire</span>
+        </div>
+        <div className="flex items-center gap-2 ml-8">
+          <Info className="w-4 h-4 text-primary" />
+          <span className="text-xs font-medium text-gray-400">Clique sur un numéro pour valider ton exercice</span>
         </div>
       </footer>
     </div>
