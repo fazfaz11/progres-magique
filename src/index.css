@@ -2,95 +2,106 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 222 47% 11%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 142 70% 45%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 280 60% 65%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 142 70% 45%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Custom pastel colors for subjects */
+    --pastel-pink: 350 80% 88%;
+    --pastel-blue: 200 80% 88%;
+    --pastel-green: 142 60% 85%;
+    --pastel-yellow: 45 90% 88%;
+    --pastel-purple: 280 60% 88%;
+    --pastel-orange: 25 90% 88%;
+    --pastel-cyan: 180 60% 88%;
+    --pastel-rose: 330 70% 88%;
+
+    /* Completed state */
+    --completed: 142 70% 50%;
+    --completed-bg: 142 60% 85%;
+
+    /* Trophy colors */
+    --gold: 45 90% 50%;
+    --silver: 210 10% 70%;
+    --bronze: 25 60% 50%;
 
     --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
+    --sidebar-foreground: 240 5% 26%;
+    --sidebar-primary: 240 6% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
+    --sidebar-accent: 240 5% 96%;
+    --sidebar-accent-foreground: 240 6% 10%;
     --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-ring: 217 91% 60%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 222 47% 8%;
     --foreground: 210 40% 98%;
 
-    --card: 222.2 84% 4.9%;
+    --card: 222 47% 11%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 222.2 84% 4.9%;
+    --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 142 70% 45%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 217.2 32.6% 17.5%;
+    --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
 
-    --accent: 217.2 32.6% 17.5%;
+    --accent: 280 60% 65%;
     --accent-foreground: 210 40% 98%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 212 27% 84%;
+
+    --sidebar-background: 240 6% 10%;
+    --sidebar-foreground: 240 5% 96%;
+    --sidebar-primary: 224 76% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 240 4% 16%;
+    --sidebar-accent-foreground: 240 5% 96%;
+    --sidebar-border: 240 4% 16%;
+    --sidebar-ring: 217 91% 60%;
   }
 }
 
@@ -100,6 +111,204 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-nunito;
+  }
+
+  html {
+    scroll-behavior: smooth;
   }
 }
+
+@layer components {
+  .exercise-tile {
+    @apply relative flex items-center justify-center rounded-lg border-2 border-border bg-card text-card-foreground font-bold transition-all duration-200 cursor-pointer hover:scale-105 hover:shadow-md select-none;
+  }
+
+  .exercise-tile-completed {
+    @apply bg-completed-bg border-completed text-completed;
+  }
+
+  .subject-card {
+    @apply rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer;
+  }
+
+  .student-card {
+    @apply rounded-2xl p-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg cursor-pointer border-2 border-transparent hover:border-primary;
+  }
+
+  .progress-star {
+    @apply text-2xl transition-all duration-300;
+  }
+
+  .progress-star-filled {
+    @apply text-gold drop-shadow-md;
+  }
+
+  .progress-star-empty {
+    @apply text-muted-foreground opacity-30;
+  }
+
+  .trophy {
+    @apply text-4xl drop-shadow-lg;
+  }
+
+  .trophy-gold {
+    @apply text-gold;
+  }
+
+  .trophy-silver {
+    @apply text-silver;
+  }
+
+  .trophy-bronze {
+    @apply text-bronze;
+  }
+}
+
+@layer utilities {
+  .bg-pastel-pink {
+    background-color: hsl(var(--pastel-pink));
+  }
+  .bg-pastel-blue {
+    background-color: hsl(var(--pastel-blue));
+  }
+  .bg-pastel-green {
+    background-color: hsl(var(--pastel-green));
+  }
+  .bg-pastel-yellow {
+    background-color: hsl(var(--pastel-yellow));
+  }
+  .bg-pastel-purple {
+    background-color: hsl(var(--pastel-purple));
+  }
+  .bg-pastel-orange {
+    background-color: hsl(var(--pastel-orange));
+  }
+  .bg-pastel-cyan {
+    background-color: hsl(var(--pastel-cyan));
+  }
+  .bg-pastel-rose {
+    background-color: hsl(var(--pastel-rose));
+  }
+  .bg-completed-bg {
+    background-color: hsl(var(--completed-bg));
+  }
+  .text-completed {
+    color: hsl(var(--completed));
+  }
+  .border-completed {
+    border-color: hsl(var(--completed));
+  }
+  .text-gold {
+    color: hsl(var(--gold));
+  }
+  .text-silver {
+    color: hsl(var(--silver));
+  }
+  .text-bronze {
+    color: hsl(var(--bronze));
+  }
+}
+
+/* Animations */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px hsl(var(--primary) / 0.2);
+  }
+}
+
+@keyframes star-pop {
+  0% {
+    transform: scale(0) rotate(-180deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.3) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-confetti {
+  animation: confetti-fall 3s ease-in-out forwards;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.5s ease-out forwards;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.animate-star-pop {
+  animation: star-pop 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Staggered animation delays for grid items */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }
+.stagger-6 { animation-delay: 0.3s; }
+.stagger-7 { animation-delay: 0.35s; }
+.stagger-8 { animation-delay: 0.4s; }
