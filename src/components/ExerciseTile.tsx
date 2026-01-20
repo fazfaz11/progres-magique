@@ -28,14 +28,11 @@ export const ExerciseTile: React.FC<ExerciseTileProps> = ({
     <div className="relative">
       <button
         onClick={onToggle}
-        className={`exercise-tile w-full aspect-square text-sm md:text-base ${
-          isCompleted ? 'exercise-tile-completed' : ''
+        className={`exercise-tile ${
+          isCompleted ? 'exercise-tile-completed' : 'exercise-tile-default'
         }`}
       >
         {label}
-        {isCompleted && (
-          <span className="absolute top-1 right-1 text-xs">✓</span>
-        )}
       </button>
       
       {showCelebration && (

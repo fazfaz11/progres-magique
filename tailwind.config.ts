@@ -14,7 +14,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        nunito: ['Nunito', 'sans-serif'],
+        display: ['Plus Jakarta Sans', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -52,21 +52,23 @@ export default {
         },
         completed: {
           DEFAULT: "hsl(var(--completed))",
-          bg: "hsl(var(--completed-bg))",
+          dark: "hsl(var(--completed-dark))",
+          foreground: "hsl(var(--completed-foreground))",
+        },
+        section: {
+          purple: "hsl(var(--section-purple))",
+          blue: "hsl(var(--section-blue))",
+          violet: "hsl(var(--section-violet))",
+          pink: "hsl(var(--section-pink))",
+          green: "hsl(var(--section-green))",
+          yellow: "hsl(var(--section-yellow))",
+          orange: "hsl(var(--section-orange))",
+          cyan: "hsl(var(--section-cyan))",
+          rose: "hsl(var(--section-rose))",
         },
         gold: "hsl(var(--gold))",
         silver: "hsl(var(--silver))",
         bronze: "hsl(var(--bronze))",
-        pastel: {
-          pink: "hsl(var(--pastel-pink))",
-          blue: "hsl(var(--pastel-blue))",
-          green: "hsl(var(--pastel-green))",
-          yellow: "hsl(var(--pastel-yellow))",
-          purple: "hsl(var(--pastel-purple))",
-          orange: "hsl(var(--pastel-orange))",
-          cyan: "hsl(var(--pastel-cyan))",
-          rose: "hsl(var(--pastel-rose))",
-        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -82,6 +84,7 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        xl: "1.5rem",
       },
       keyframes: {
         "accordion-down": {

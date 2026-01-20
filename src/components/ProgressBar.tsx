@@ -1,4 +1,5 @@
 import React from 'react';
+import { Star } from 'lucide-react';
 
 interface ProgressBarProps {
   percentage: number;
@@ -16,29 +17,27 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   
   return (
     <div className="w-full">
-      <div className={`relative w-full ${heights[size]} bg-muted rounded-full overflow-hidden`}>
-        <div 
-          className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-emerald-400 rounded-full transition-all duration-500 ease-out"
-          style={{ width: `${percentage}%` }}
-        />
-      </div>
       {showStars && (
-        <div className="flex justify-center gap-1 mt-2">
+        <div className="flex justify-end gap-1 mb-2">
           {Array.from({ length: 10 }).map((_, index) => (
-            <span
+            <Star
               key={index}
-              className={`progress-star ${
+              className={`w-4 h-4 ${
                 index < starCount 
-                  ? 'progress-star-filled animate-star-pop' 
-                  : 'progress-star-empty'
+                  ? 'text-yellow-400 fill-yellow-400' 
+                  : 'text-gray-200'
               }`}
-              style={{ animationDelay: `${index * 0.1}s` }}
-            >
-              ⭐
-            </span>
+              style={index < starCount ? { animationDelay: `${index * 0.1}s` } : {}}
+            />
           ))}
         </div>
       )}
+      <div className={`relative w-full ${heights[size]} bg-gray-100 rounded-full overflow-hidden border border-black/5 p-0.5`}>
+        <div 
+          className="h-full bg-primary rounded-full transition-all duration-1000"
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
     </div>
   );
 };

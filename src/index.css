@@ -2,53 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
 @layer base {
   :root {
     --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
+    --foreground: 0 0% 0%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 0%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 0 0% 0%;
 
-    --primary: 142 70% 45%;
+    --primary: 195 100% 47%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 210 40% 96%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary-foreground: 0 0% 0%;
 
     --muted: 210 40% 96%;
     --muted-foreground: 215 16% 47%;
 
-    --accent: 280 60% 65%;
+    --accent: 270 60% 70%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
+    --border: 0 0% 0% / 0.05;
     --input: 214 32% 91%;
-    --ring: 142 70% 45%;
+    --ring: 195 100% 47%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Custom pastel colors for subjects */
-    --pastel-pink: 350 80% 88%;
-    --pastel-blue: 200 80% 88%;
-    --pastel-green: 142 60% 85%;
-    --pastel-yellow: 45 90% 88%;
-    --pastel-purple: 280 60% 88%;
-    --pastel-orange: 25 90% 88%;
-    --pastel-cyan: 180 60% 88%;
-    --pastel-rose: 330 70% 88%;
+    /* Section colors */
+    --section-purple: 280 100% 92%;
+    --section-blue: 185 100% 82%;
+    --section-violet: 280 60% 70%;
+    --section-pink: 350 100% 92%;
+    --section-green: 142 60% 85%;
+    --section-yellow: 45 100% 90%;
+    --section-orange: 25 100% 90%;
+    --section-cyan: 180 100% 90%;
+    --section-rose: 330 100% 92%;
 
-    /* Completed state */
-    --completed: 142 70% 50%;
-    --completed-bg: 142 60% 85%;
+    /* Completed state - lime green */
+    --completed: 84 80% 45%;
+    --completed-dark: 84 80% 35%;
+    --completed-foreground: 0 0% 100%;
 
     /* Trophy colors */
     --gold: 45 90% 50%;
@@ -68,32 +70,23 @@
   .dark {
     --background: 222 47% 8%;
     --foreground: 210 40% 98%;
-
     --card: 222 47% 11%;
     --card-foreground: 210 40% 98%;
-
     --popover: 222 47% 11%;
     --popover-foreground: 210 40% 98%;
-
-    --primary: 142 70% 45%;
+    --primary: 195 100% 47%;
     --primary-foreground: 0 0% 100%;
-
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
-
     --muted: 217 33% 17%;
     --muted-foreground: 215 20% 65%;
-
     --accent: 280 60% 65%;
     --accent-foreground: 210 40% 98%;
-
     --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-
     --border: 217 33% 17%;
     --input: 217 33% 17%;
     --ring: 212 27% 84%;
-
     --sidebar-background: 240 6% 10%;
     --sidebar-foreground: 240 5% 96%;
     --sidebar-primary: 224 76% 48%;
@@ -111,7 +104,8 @@
   }
 
   body {
-    @apply bg-background text-foreground font-nunito;
+    @apply bg-background text-foreground;
+    font-family: 'Plus Jakarta Sans', sans-serif;
   }
 
   html {
@@ -121,83 +115,82 @@
 
 @layer components {
   .exercise-tile {
-    @apply relative flex items-center justify-center rounded-lg border-2 border-border bg-card text-card-foreground font-bold transition-all duration-200 cursor-pointer hover:scale-105 hover:shadow-md select-none;
+    @apply relative aspect-square rounded-lg flex items-center justify-center font-black text-lg transition-all duration-200 cursor-pointer select-none;
+  }
+
+  .exercise-tile:hover {
+    transform: scale(1.05);
+    z-index: 10;
+  }
+
+  .exercise-tile-default {
+    @apply bg-white border border-black/5 border-b-4 border-b-gray-200 text-black/40;
+  }
+
+  .exercise-tile-default:hover {
+    @apply bg-white/80;
   }
 
   .exercise-tile-completed {
-    @apply bg-completed-bg border-completed text-completed;
+    @apply bg-completed text-white border-b-4 shadow-inner;
+    border-bottom-color: hsl(var(--completed-dark));
   }
 
-  .subject-card {
-    @apply rounded-2xl p-6 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl cursor-pointer;
+  .section-header {
+    @apply p-6 border-b border-black/5;
+  }
+
+  .section-content {
+    @apply flex-grow overflow-y-auto p-6;
   }
 
   .student-card {
     @apply rounded-2xl p-4 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg cursor-pointer border-2 border-transparent hover:border-primary;
   }
 
-  .progress-star {
-    @apply text-2xl transition-all duration-300;
-  }
-
   .progress-star-filled {
-    @apply text-gold drop-shadow-md;
+    @apply text-yellow-400;
   }
 
   .progress-star-empty {
-    @apply text-muted-foreground opacity-30;
+    @apply text-gray-200;
   }
 
   .trophy {
     @apply text-4xl drop-shadow-lg;
   }
-
-  .trophy-gold {
-    @apply text-gold;
-  }
-
-  .trophy-silver {
-    @apply text-silver;
-  }
-
-  .trophy-bronze {
-    @apply text-bronze;
-  }
 }
 
 @layer utilities {
-  .bg-pastel-pink {
-    background-color: hsl(var(--pastel-pink));
+  .bg-section-purple {
+    background-color: hsl(var(--section-purple));
   }
-  .bg-pastel-blue {
-    background-color: hsl(var(--pastel-blue));
+  .bg-section-blue {
+    background-color: hsl(var(--section-blue));
   }
-  .bg-pastel-green {
-    background-color: hsl(var(--pastel-green));
+  .bg-section-violet {
+    background-color: hsl(var(--section-violet));
   }
-  .bg-pastel-yellow {
-    background-color: hsl(var(--pastel-yellow));
+  .bg-section-pink {
+    background-color: hsl(var(--section-pink));
   }
-  .bg-pastel-purple {
-    background-color: hsl(var(--pastel-purple));
+  .bg-section-green {
+    background-color: hsl(var(--section-green));
   }
-  .bg-pastel-orange {
-    background-color: hsl(var(--pastel-orange));
+  .bg-section-yellow {
+    background-color: hsl(var(--section-yellow));
   }
-  .bg-pastel-cyan {
-    background-color: hsl(var(--pastel-cyan));
+  .bg-section-orange {
+    background-color: hsl(var(--section-orange));
   }
-  .bg-pastel-rose {
-    background-color: hsl(var(--pastel-rose));
+  .bg-section-cyan {
+    background-color: hsl(var(--section-cyan));
   }
-  .bg-completed-bg {
-    background-color: hsl(var(--completed-bg));
+  .bg-section-rose {
+    background-color: hsl(var(--section-rose));
   }
-  .text-completed {
-    color: hsl(var(--completed));
-  }
-  .border-completed {
-    border-color: hsl(var(--completed));
+  .bg-completed {
+    background-color: hsl(var(--completed));
   }
   .text-gold {
     color: hsl(var(--gold));
@@ -207,6 +200,20 @@
   }
   .text-bronze {
     color: hsl(var(--bronze));
+  }
+
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-black/10 rounded-full;
+  }
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-black/20;
   }
 }
 
@@ -233,15 +240,6 @@
   100% {
     transform: scale(1);
     opacity: 1;
-  }
-}
-
-@keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.4);
-  }
-  50% {
-    box-shadow: 0 0 20px 10px hsl(var(--primary) / 0.2);
   }
 }
 
@@ -287,10 +285,6 @@
   animation: bounce-in 0.5s ease-out forwards;
 }
 
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
 .animate-star-pop {
   animation: star-pop 0.5s ease-out forwards;
 }
@@ -302,13 +296,3 @@
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
-
-/* Staggered animation delays for grid items */
-.stagger-1 { animation-delay: 0.05s; }
-.stagger-2 { animation-delay: 0.1s; }
-.stagger-3 { animation-delay: 0.15s; }
-.stagger-4 { animation-delay: 0.2s; }
-.stagger-5 { animation-delay: 0.25s; }
-.stagger-6 { animation-delay: 0.3s; }
-.stagger-7 { animation-delay: 0.35s; }
-.stagger-8 { animation-delay: 0.4s; }
