@@ -1,19 +1,21 @@
 import { Subject, Exercise, ExerciseCategory } from '@/types';
 
-// Helper to generate exercise ranges
-const generateExercises = (prefix: string, start: number, end: number, suffix: string = ''): Exercise[] => {
+// Helper to generate exercise ranges with separate id and label
+const generateExercises = (idPrefix: string, start: number, end: number, labelPrefix?: string): Exercise[] => {
   const exercises: Exercise[] = [];
+  const displayPrefix = labelPrefix || idPrefix;
   for (let i = start; i <= end; i++) {
-    exercises.push({ id: `${prefix}${i}${suffix}`, label: `${prefix}${i}${suffix}` });
+    exercises.push({ id: `${idPrefix}${i}`, label: `${displayPrefix}${i}` });
   }
   return exercises;
 };
 
-const generateLetterExercises = (prefix: string, start: number, end: number, letters: string[]): Exercise[] => {
+const generateLetterExercises = (idPrefix: string, start: number, end: number, letters: string[], labelPrefix?: string): Exercise[] => {
   const exercises: Exercise[] = [];
+  const displayPrefix = labelPrefix || idPrefix;
   for (let i = start; i <= end; i++) {
     for (const letter of letters) {
-      exercises.push({ id: `${prefix}${i}${letter}`, label: `${prefix}${i}${letter}` });
+      exercises.push({ id: `${idPrefix}${i}${letter}`, label: `${displayPrefix}${i}${letter}` });
     }
   }
   return exercises;
@@ -30,7 +32,7 @@ export const subjects: Subject[] = [
         id: 'transpositions',
         name: 'Transpositions',
         description: 'Exercices de transposition',
-        exercises: generateExercises('TRANSPO-', 1, 168),
+        exercises: generateExercises('TRANSPO-', 1, 168, 'T'),
       },
       {
         id: 'jeux-lecture-s',
@@ -54,7 +56,7 @@ export const subjects: Subject[] = [
         id: 'lecture-verifix',
         name: 'Lecture VERIFIX',
         description: 'Exercices VERIFIX',
-        exercises: generateExercises('VERIFIX-', 1, 60),
+        exercises: generateExercises('VERIFIX-', 1, 60, 'V'),
       },
     ],
   },
@@ -68,19 +70,19 @@ export const subjects: Subject[] = [
         id: 'recherche-internet',
         name: 'Recherche Internet',
         description: 'Trouver des informations en ligne',
-        exercises: generateExercises('INTERNET-', 1, 72),
+        exercises: generateExercises('INTERNET-', 1, 72, 'I'),
       },
       {
         id: 'defis-word',
         name: 'Défis Copie WORD',
         description: 'Traitement de texte et mise en forme',
-        exercises: generateExercises('WORD-', 1, 120),
+        exercises: generateExercises('WORD-', 1, 120, 'W'),
       },
       {
         id: 'defis-diaporama',
         name: 'Défis Diaporama',
         description: 'Présentations et diapos',
-        exercises: generateExercises('DIAPO-', 1, 120),
+        exercises: generateExercises('DIAPO-', 1, 120, 'Di'),
       },
     ],
   },
@@ -94,13 +96,13 @@ export const subjects: Subject[] = [
         id: 'reproduction-couleurs',
         name: 'Reproduction Couleurs',
         description: 'Reproduction avec couleurs',
-        exercises: generateExercises('RCOU-', 1, 80),
+        exercises: generateExercises('RCOU-', 1, 80, 'RC'),
       },
       {
         id: 'reproduction-regle',
         name: 'Reproduction Règle',
         description: 'Reproduction avec la règle',
-        exercises: generateExercises('RREG-', 1, 101),
+        exercises: generateExercises('RREG-', 1, 101, 'RR'),
       },
     ],
   },
@@ -146,7 +148,7 @@ export const subjects: Subject[] = [
         id: 'problemes-main',
         name: 'Problèmes',
         description: '120 problèmes à résoudre',
-        exercises: generateExercises('PROB-', 1, 120),
+        exercises: generateExercises('PROB-', 1, 120, 'Pb'),
       },
     ],
   },
