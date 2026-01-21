@@ -121,7 +121,7 @@ const ExercisesPage: React.FC = () => {
       <main className="flex-grow w-full max-w-[1440px] mx-auto grid overflow-hidden" 
         style={{ 
           gridTemplateColumns: `repeat(${Math.min(subject.categories.length, 3)}, 1fr)`,
-          height: 'calc(100vh - 140px)'
+          height: 'calc(100vh - 100px)'
         }}
       >
         {subject.categories.map((category, index) => {
@@ -147,7 +147,7 @@ const ExercisesPage: React.FC = () => {
                 <p className={`text-xs font-bold uppercase opacity-60 ${colors.textColor}`}>{category.description}</p>
               </div>
               
-              <div className="section-content custom-scrollbar">
+              <div className="section-content custom-scrollbar flex-1 overflow-y-auto pb-4">
                 <div className="flex flex-wrap gap-2 p-1">
                   {category.exercises.map((exercise) => (
                     <ExerciseTile
@@ -164,22 +164,6 @@ const ExercisesPage: React.FC = () => {
           );
         })}
       </main>
-
-      {/* Footer Legend */}
-      <footer className="bg-card border-t border-gray-100 p-4 flex justify-center items-center gap-6">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-completed shadow-inner border border-completed-dark"></div>
-          <span className="text-xs font-bold text-gray-500 uppercase">Terminé</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded bg-white border border-gray-200 border-b-4 border-b-gray-100"></div>
-          <span className="text-xs font-bold text-gray-500 uppercase">À faire</span>
-        </div>
-        <div className="flex items-center gap-2 ml-8">
-          <Info className="w-4 h-4 text-primary" />
-          <span className="text-xs font-medium text-gray-400">Clique sur un numéro pour valider ton exercice</span>
-        </div>
-      </footer>
     </div>
   );
 };
