@@ -141,7 +141,7 @@
   }
 
   .section-content {
-    @apply flex-grow overflow-y-auto p-6;
+    @apply flex-grow overflow-y-auto p-6 max-h-full;
   }
 
   .student-card {
