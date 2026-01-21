@@ -25,16 +25,16 @@ export const ExerciseTile: React.FC<ExerciseTileProps> = ({
   }, [isCompleted, wasCompleted]);
 
   return (
-    <div className="relative">
+    <div className="relative flex-shrink-0">
       <button
         onClick={onToggle}
-        className={`w-14 h-14 rounded-lg flex items-center justify-center font-bold transition-all duration-200 select-none cursor-pointer text-[10px] leading-tight text-center p-1 border-2 ${
+        className={`w-16 h-12 rounded-lg flex items-center justify-center font-bold transition-all duration-200 select-none cursor-pointer text-xs leading-none text-center border-2 ${
           isCompleted 
             ? 'bg-completed text-white border-completed-dark shadow-inner border-b-4' 
             : 'bg-white text-gray-700 border-gray-300 border-b-4 border-b-gray-400 hover:border-primary hover:border-b-primary-dark active:translate-y-0.5 active:border-b-2'
         }`}
       >
-        <span className="break-words hyphens-auto overflow-hidden">{label}</span>
+        {label}
       </button>
       
       {showCelebration && (
