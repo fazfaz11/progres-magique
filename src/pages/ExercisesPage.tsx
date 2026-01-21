@@ -148,7 +148,7 @@ const ExercisesPage: React.FC = () => {
               </div>
               
               <div className="section-content custom-scrollbar">
-                <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
+                <div className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-7 gap-3 justify-items-center">
                   {category.exercises.map((exercise) => (
                     <ExerciseTile
                       key={exercise.id}
