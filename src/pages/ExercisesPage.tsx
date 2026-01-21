@@ -78,16 +78,16 @@ const ExercisesPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-background font-display">
+    <div className="h-screen flex flex-col bg-background font-display overflow-hidden">
       <Confetti isActive={showConfetti} />
       
       {/* Header */}
-      <header className="bg-card border-b border-gray-100 sticky top-0 z-50 px-6 py-4 shadow-sm">
+      <header className="bg-card border-b border-gray-100 px-6 py-4 shadow-sm flex-shrink-0">
         <div className="max-w-[1400px] mx-auto flex items-center justify-between">
           <div className="flex items-center gap-8">
             <button 
               onClick={() => navigate(`/student/${studentId}/subjects`)}
-              className="flex items-center gap-2 text-gray-400 hover:text-primary transition-colors group"
+              className="flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors group"
             >
               <ArrowLeft className="w-5 h-5 font-bold" />
               <span className="font-bold uppercase tracking-wider text-sm">Retour</span>
@@ -100,14 +100,14 @@ const ExercisesPage: React.FC = () => {
           
           <div className="flex-grow max-w-2xl mx-12">
             <div className="flex justify-between items-end mb-2">
-              <span className="text-xs font-black text-gray-500 uppercase tracking-widest">Progression Globale</span>
+              <span className="text-xs font-black text-muted-foreground uppercase tracking-widest">Progression Globale</span>
             </div>
             <ProgressBar percentage={progress.percentage} showStars={true} size="md" />
           </div>
           
           <div className="flex items-center gap-4">
             <div className="text-right">
-              <p className="text-xs font-bold text-gray-400 uppercase">Élève</p>
+              <p className="text-xs font-bold text-muted-foreground uppercase">Élève</p>
               <p className="text-sm font-black text-foreground">{student.firstName} {student.lastName.charAt(0)}.</p>
             </div>
             <div className="w-10 h-10 rounded-full bg-completed border-2 border-white shadow-sm flex items-center justify-center text-white font-black">
@@ -118,10 +118,10 @@ const ExercisesPage: React.FC = () => {
       </header>
 
       {/* Main Content - Grid of Categories */}
-      <main className="flex-grow w-full max-w-[1440px] mx-auto grid overflow-hidden" 
+      <main 
+        className="flex-1 w-full max-w-[1440px] mx-auto grid min-h-0" 
         style={{ 
-          gridTemplateColumns: `repeat(${Math.min(subject.categories.length, 3)}, 1fr)`,
-          height: 'calc(100vh - 100px)'
+          gridTemplateColumns: `repeat(${Math.min(subject.categories.length, 3)}, 1fr)`
         }}
       >
         {subject.categories.map((category, index) => {
@@ -135,9 +135,9 @@ const ExercisesPage: React.FC = () => {
           return (
             <section 
               key={category.id} 
-              className={`flex flex-col ${index < subject.categories.length - 1 ? 'border-r border-black/5' : ''} ${colors.bg}`}
+              className={`flex flex-col min-h-0 ${index < subject.categories.length - 1 ? 'border-r border-black/5' : ''} ${colors.bg}`}
             >
-              <div className={`section-header ${colors.headerBg}`}>
+              <div className={`section-header flex-shrink-0 ${colors.headerBg}`}>
                 <div className="flex items-center justify-between mb-2">
                   <h3 className="text-xl font-black text-foreground uppercase tracking-tight">{category.name}</h3>
                   <span className={`bg-white/50 px-3 py-1 rounded-full text-xs font-black ${colors.textColor}`}>
@@ -147,8 +147,8 @@ const ExercisesPage: React.FC = () => {
                 <p className={`text-xs font-bold uppercase opacity-60 ${colors.textColor}`}>{category.description}</p>
               </div>
               
-              <div className="section-content custom-scrollbar flex-1 overflow-y-auto pb-4">
-                <div className="flex flex-wrap gap-2 p-1">
+              <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
+                <div className="flex flex-wrap gap-2">
                   {category.exercises.map((exercise) => (
                     <ExerciseTile
                       key={exercise.id}

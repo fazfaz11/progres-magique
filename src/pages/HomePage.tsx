@@ -116,20 +116,6 @@ const HomePage: React.FC = () => {
           })}
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="fixed bottom-0 left-0 right-0 bg-card border-t border-gray-100 py-3">
-        <div className="max-w-[1400px] mx-auto px-6 flex items-center justify-center gap-6 text-sm text-gray-500">
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-completed" />
-            <span className="font-bold uppercase text-xs">TERMINÉ</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="w-3 h-3 rounded-full bg-white border border-gray-200" />
-            <span className="font-bold uppercase text-xs">À FAIRE</span>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
