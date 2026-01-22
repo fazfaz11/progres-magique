@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStudents } from '@/hooks/useStudents';
 import { useApp } from '@/context/AppContext';
 import { Settings, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Confetti } from '@/components/Confetti';
 
 const pastelColors = [
   { bg: 'bg-section-pink', border: 'border-pink-400' },
@@ -19,9 +20,25 @@ const pastelColors = [
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const { setCurrentStudentId, setIsTeacherMode } = useApp();
-  const { getStudentsSortedByProgress, getTotalCompletedExercises, getStudentRank } = useStudents();
+  const { getStudentsSortedByProgress, getTotalProgress, getStudentRank } = useStudents();
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const sortedStudents = getStudentsSortedByProgress();
+
+  // Check if any student in top 3 has progress - trigger confetti on page load
+  useEffect(() => {
+    const hasTop3Progress = sortedStudents.some((student, index) => {
+      const { rank } = getStudentRank(student.id);
+      const { completed } = getTotalProgress(student.id);
+      return rank <= 3 && completed > 0;
+    });
+    
+    if (hasTop3Progress) {
+      setShowConfetti(true);
+      const timer = setTimeout(() => setShowConfetti(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const handleStudentClick = (studentId: string) => {
     setCurrentStudentId(studentId);
@@ -42,6 +59,8 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background font-display">
+      <Confetti isActive={showConfetti} />
+      
       {/* Header */}
       <header className="bg-card border-b border-gray-100 sticky top-0 z-10 shadow-sm">
         <div className="max-w-[1400px] mx-auto px-6 py-4">
@@ -70,7 +89,7 @@ const HomePage: React.FC = () => {
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
           {sortedStudents.map((student, index) => {
             const { rank, isExAequo } = getStudentRank(student.id);
-            const totalExercises = getTotalCompletedExercises(student.id);
+            const { completed, total } = getTotalProgress(student.id);
             const colorIndex = (student.firstName.charCodeAt(0) + student.lastName.charCodeAt(0)) % pastelColors.length;
             const colorSet = pastelColors[colorIndex];
             
@@ -105,11 +124,10 @@ const HomePage: React.FC = () => {
                     <p className="text-sm font-medium text-gray-500">{student.lastName}</p>
                   </div>
                   
-                  {/* Exercise count */}
+                  {/* Exercise count - now showing completed/total */}
                   <div className="flex items-center gap-2 bg-white/80 px-3 py-1.5 rounded-full shadow-sm">
                     <span className="text-lg">✅</span>
-                    <span className="font-black text-foreground">{totalExercises}</span>
-                    <span className="text-xs text-gray-500">exercices</span>
+                    <span className="font-black text-foreground">{completed}/{total}</span>
                   </div>
                 </div>
               </div>
