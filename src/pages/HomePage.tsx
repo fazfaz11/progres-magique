@@ -2,19 +2,32 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStudents } from '@/hooks/useStudents';
 import { useApp } from '@/context/AppContext';
-import { Settings, Trophy } from 'lucide-react';
+import { Settings, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Confetti } from '@/components/Confetti';
 
-const pastelColors = [
-  { bg: 'bg-section-pink', border: 'border-pink-400' },
-  { bg: 'bg-section-blue', border: 'border-cyan-400' },
-  { bg: 'bg-section-green', border: 'border-green-400' },
-  { bg: 'bg-section-yellow', border: 'border-yellow-400' },
-  { bg: 'bg-section-purple', border: 'border-purple-400' },
-  { bg: 'bg-section-orange', border: 'border-orange-400' },
-  { bg: 'bg-section-cyan', border: 'border-teal-400' },
-  { bg: 'bg-section-rose', border: 'border-rose-400' },
+// Background colors for cards
+const cardColors = [
+  'bg-pink-300',
+  'bg-blue-400',
+  'bg-orange-300',
+  'bg-cyan-300',
+  'bg-purple-300',
+  'bg-green-300',
+  'bg-rose-300',
+  'bg-amber-300',
+];
+
+// Avatar colors - bright and distinct
+const avatarColors = [
+  'bg-rose-400',
+  'bg-green-400',
+  'bg-blue-500',
+  'bg-lime-400',
+  'bg-fuchsia-500',
+  'bg-orange-400',
+  'bg-cyan-400',
+  'bg-red-500',
 ];
 
 const HomePage: React.FC = () => {
@@ -27,7 +40,7 @@ const HomePage: React.FC = () => {
 
   // Check if any student in top 3 has progress - trigger confetti on page load
   useEffect(() => {
-    const hasTop3Progress = sortedStudents.some((student, index) => {
+    const hasTop3Progress = sortedStudents.some((student) => {
       const { rank } = getStudentRank(student.id);
       const { completed } = getTotalProgress(student.id);
       return rank <= 3 && completed > 0;
@@ -50,11 +63,18 @@ const HomePage: React.FC = () => {
     navigate('/teacher');
   };
 
-  const getTrophyColor = (rank: number) => {
-    if (rank === 1) return 'text-gold';
-    if (rank === 2) return 'text-silver';
-    if (rank === 3) return 'text-bronze';
-    return 'text-gray-400';
+  const getTrophyEmoji = (rank: number) => {
+    if (rank === 1) return '🏆';
+    if (rank === 2) return '🥈';
+    if (rank === 3) return '🥉';
+    return null;
+  };
+
+  const getTrophyBgColor = (rank: number) => {
+    if (rank === 1) return 'bg-yellow-400';
+    if (rank === 2) return 'bg-gray-300';
+    if (rank === 3) return 'bg-amber-600';
+    return '';
   };
 
   return (
@@ -69,7 +89,7 @@ const HomePage: React.FC = () => {
               <span className="text-4xl">📊</span>
               <div>
                 <h1 className="text-2xl font-black tracking-tighter text-foreground uppercase">SUIVI DES PROGRÈS ULIS</h1>
-                <p className="text-sm font-medium text-gray-400">Clique sur ton prénom pour commencer</p>
+                <p className="text-sm font-medium text-muted-foreground">Sélectionnez votre prénom pour commencer</p>
               </div>
             </div>
             <Button
@@ -86,50 +106,93 @@ const HomePage: React.FC = () => {
 
       {/* Students Grid */}
       <main className="max-w-[1400px] mx-auto px-6 py-8">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-5">
           {sortedStudents.map((student, index) => {
             const { rank, isExAequo } = getStudentRank(student.id);
             const { completed, total } = getTotalProgress(student.id);
-            const colorIndex = (student.firstName.charCodeAt(0) + student.lastName.charCodeAt(0)) % pastelColors.length;
-            const colorSet = pastelColors[colorIndex];
+            const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            const starsCount = Math.floor(percentage / 10);
+            
+            const cardColorIndex = (student.firstName.charCodeAt(0) + student.lastName.charCodeAt(0)) % cardColors.length;
+            const avatarColorIndex = (student.firstName.charCodeAt(0) * 2 + student.lastName.charCodeAt(0)) % avatarColors.length;
+            
+            const trophyEmoji = getTrophyEmoji(rank);
+            const showTrophy = rank <= 3;
             
             return (
               <div
                 key={student.id}
                 onClick={() => handleStudentClick(student.id)}
-                className={`student-card ${colorSet.bg} ${colorSet.border} border-4 animate-slide-up`}
+                className={`relative rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-xl ${cardColors[cardColorIndex]} animate-slide-up`}
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
-                <div className="flex flex-col items-center gap-3">
-                  {/* Trophy with rank - much bigger */}
-                  <div className="relative">
-                    <Trophy className={`w-16 h-16 ${getTrophyColor(rank)} drop-shadow-xl`} fill="currentColor" strokeWidth={1.5} />
-                    <span className="absolute -bottom-2 -right-2 bg-card rounded-full px-2 py-0.5 text-sm font-black text-foreground border-2 border-border shadow-md">
+                {/* Trophy badge for top 3 - only if they have completed exercises */}
+                {showTrophy && completed > 0 && (
+                  <div className={`absolute -top-3 -left-3 w-14 h-14 rounded-full ${getTrophyBgColor(rank)} flex items-center justify-center shadow-lg border-4 border-white z-10`}>
+                    <span className="text-2xl">{trophyEmoji}</span>
+                    <span className="absolute -bottom-1 -right-1 bg-white text-xs font-black w-5 h-5 rounded-full flex items-center justify-center shadow border">
                       {rank}
                     </span>
                   </div>
-                  
-                  {isExAequo && (
-                    <span className="text-[10px] font-bold text-gray-500 bg-white/70 px-2 py-0.5 rounded-full">
-                      ex æquo
-                    </span>
-                  )}
-                  
-                  {/* Notebook icon */}
-                  <div className="text-3xl">📓</div>
-                  
-                  {/* Name */}
-                  <div className="text-center">
-                    <h3 className="text-lg font-black text-foreground">{student.firstName}</h3>
-                    <p className="text-sm font-medium text-gray-500">{student.lastName}</p>
-                  </div>
-                  
-                  {/* Exercise count - now showing completed/total */}
-                  <div className="flex items-center gap-2 bg-white/80 px-3 py-1.5 rounded-full shadow-sm">
-                    <span className="text-lg">✅</span>
-                    <span className="font-black text-foreground">{completed}/{total}</span>
+                )}
+                
+                {/* Book icon */}
+                <div className="flex justify-center mb-2">
+                  <BookOpen className="w-5 h-5 text-fuchsia-500" />
+                </div>
+                
+                {/* Avatar circle */}
+                <div className="flex justify-center mb-3">
+                  <div className={`w-16 h-16 rounded-full ${avatarColors[avatarColorIndex]} flex items-center justify-center text-white text-2xl font-black shadow-lg border-4 border-white/50`}>
+                    {student.firstName.charAt(0)}
                   </div>
                 </div>
+                
+                {/* Name with badge background */}
+                <div className="text-center mb-3">
+                  <div className="inline-block bg-blue-600/90 px-4 py-1 rounded shadow-sm">
+                    <h3 className="text-xl font-black text-white">{student.firstName}</h3>
+                  </div>
+                  <p className="text-sm font-medium text-gray-700 mt-1">{student.lastName.charAt(0)}</p>
+                </div>
+                
+                {/* Progress section */}
+                <div className="space-y-2">
+                  {/* Exercise count and percentage */}
+                  <div className="flex justify-between items-center text-sm">
+                    <span className="font-bold text-gray-800">{completed}/{total} exercices</span>
+                    <span className="font-black text-blue-700">{percentage}%</span>
+                  </div>
+                  
+                  {/* Progress bar */}
+                  <div className="h-3 bg-white/50 rounded-full overflow-hidden shadow-inner">
+                    <div 
+                      className="h-full bg-green-500 rounded-full transition-all duration-500"
+                      style={{ width: `${Math.max(percentage, 2)}%` }}
+                    />
+                  </div>
+                  
+                  {/* Stars row */}
+                  <div className="flex justify-center gap-0.5">
+                    {Array.from({ length: 10 }).map((_, i) => (
+                      <span 
+                        key={i} 
+                        className={`text-sm ${i < starsCount ? 'text-yellow-400' : 'text-gray-400/50'}`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                
+                {/* Ex aequo label */}
+                {isExAequo && rank <= 3 && (
+                  <div className="absolute top-2 right-2">
+                    <span className="text-[9px] font-bold text-white bg-gray-600/80 px-1.5 py-0.5 rounded">
+                      ex æquo
+                    </span>
+                  </div>
+                )}
               </div>
             );
           })}
