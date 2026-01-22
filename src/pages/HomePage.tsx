@@ -6,14 +6,14 @@ import { Settings, Trophy } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const pastelColors = [
-  'bg-section-pink',
-  'bg-section-blue',
-  'bg-section-green',
-  'bg-section-yellow',
-  'bg-section-purple',
-  'bg-section-orange',
-  'bg-section-cyan',
-  'bg-section-rose',
+  { bg: 'bg-section-pink', border: 'border-pink-400' },
+  { bg: 'bg-section-blue', border: 'border-cyan-400' },
+  { bg: 'bg-section-green', border: 'border-green-400' },
+  { bg: 'bg-section-yellow', border: 'border-yellow-400' },
+  { bg: 'bg-section-purple', border: 'border-purple-400' },
+  { bg: 'bg-section-orange', border: 'border-orange-400' },
+  { bg: 'bg-section-cyan', border: 'border-teal-400' },
+  { bg: 'bg-section-rose', border: 'border-rose-400' },
 ];
 
 const HomePage: React.FC = () => {
@@ -72,25 +72,26 @@ const HomePage: React.FC = () => {
             const { rank, isExAequo } = getStudentRank(student.id);
             const totalExercises = getTotalCompletedExercises(student.id);
             const colorIndex = (student.firstName.charCodeAt(0) + student.lastName.charCodeAt(0)) % pastelColors.length;
+            const colorSet = pastelColors[colorIndex];
             
             return (
               <div
                 key={student.id}
                 onClick={() => handleStudentClick(student.id)}
-                className={`student-card ${pastelColors[colorIndex]}/50 animate-slide-up`}
+                className={`student-card ${colorSet.bg} ${colorSet.border} border-4 animate-slide-up`}
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
                 <div className="flex flex-col items-center gap-3">
-                  {/* Trophy with rank */}
+                  {/* Trophy with rank - much bigger */}
                   <div className="relative">
-                    <Trophy className={`w-10 h-10 ${getTrophyColor(rank)} drop-shadow-lg`} fill="currentColor" />
-                    <span className="absolute -bottom-1 -right-1 bg-card rounded-full px-1.5 text-xs font-black text-foreground border border-border shadow-sm">
+                    <Trophy className={`w-16 h-16 ${getTrophyColor(rank)} drop-shadow-xl`} fill="currentColor" strokeWidth={1.5} />
+                    <span className="absolute -bottom-2 -right-2 bg-card rounded-full px-2 py-0.5 text-sm font-black text-foreground border-2 border-border shadow-md">
                       {rank}
                     </span>
                   </div>
                   
                   {isExAequo && (
-                    <span className="text-[10px] font-bold text-gray-500 bg-white/50 px-2 py-0.5 rounded-full">
+                    <span className="text-[10px] font-bold text-gray-500 bg-white/70 px-2 py-0.5 rounded-full">
                       ex æquo
                     </span>
                   )}
@@ -105,7 +106,7 @@ const HomePage: React.FC = () => {
                   </div>
                   
                   {/* Exercise count */}
-                  <div className="flex items-center gap-2 bg-white/60 px-3 py-1.5 rounded-full">
+                  <div className="flex items-center gap-2 bg-white/80 px-3 py-1.5 rounded-full shadow-sm">
                     <span className="text-lg">✅</span>
                     <span className="font-black text-foreground">{totalExercises}</span>
                     <span className="text-xs text-gray-500">exercices</span>
