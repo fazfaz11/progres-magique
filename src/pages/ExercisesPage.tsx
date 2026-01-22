@@ -119,9 +119,10 @@ const ExercisesPage: React.FC = () => {
 
       {/* Main Content - Grid of Categories */}
       <main 
-        className="flex-1 w-full max-w-[1440px] mx-auto grid min-h-0" 
+        className="flex-1 w-full mx-auto grid min-h-0" 
         style={{ 
-          gridTemplateColumns: `repeat(${Math.min(subject.categories.length, 3)}, 1fr)`
+          gridTemplateColumns: `repeat(${subject.categories.length}, 1fr)`,
+          maxWidth: subject.categories.length <= 3 ? '1440px' : '100%'
         }}
       >
         {subject.categories.map((category, index) => {
