@@ -123,14 +123,14 @@ const HomePage: React.FC = () => {
               <div
                 key={student.id}
                 onClick={() => handleStudentClick(student.id)}
-                className={`relative rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-xl ${cardColors[cardColorIndex]} animate-slide-up`}
+                className={`relative rounded-2xl p-4 cursor-pointer transition-all hover:scale-[1.02] hover:shadow-xl ${cardColors[cardColorIndex]} animate-slide-up border-4 border-gray-800`}
                 style={{ animationDelay: `${index * 0.05}s` }}
               >
                 {/* Trophy badge for top 3 - only if they have completed exercises */}
                 {showTrophy && completed > 0 && (
-                  <div className={`absolute -top-3 -left-3 w-14 h-14 rounded-full ${getTrophyBgColor(rank)} flex items-center justify-center shadow-lg border-4 border-white z-10`}>
-                    <span className="text-2xl">{trophyEmoji}</span>
-                    <span className="absolute -bottom-1 -right-1 bg-white text-xs font-black w-5 h-5 rounded-full flex items-center justify-center shadow border">
+                  <div className={`absolute -top-4 -left-4 w-20 h-20 rounded-full ${getTrophyBgColor(rank)} flex items-center justify-center shadow-xl border-4 border-white z-10`}>
+                    <span className="text-4xl">{trophyEmoji}</span>
+                    <span className="absolute -bottom-1 -right-1 bg-white text-lg font-black w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-gray-200">
                       {rank}
                     </span>
                   </div>
