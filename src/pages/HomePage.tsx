@@ -8,26 +8,26 @@ import { Confetti } from '@/components/Confetti';
 
 // Background colors for cards
 const cardColors = [
-  'bg-pink-300',
-  'bg-blue-400',
-  'bg-orange-300',
-  'bg-cyan-300',
-  'bg-purple-300',
-  'bg-green-300',
-  'bg-rose-300',
-  'bg-amber-300',
+  'bg-pink-200',
+  'bg-sky-200',
+  'bg-orange-200',
+  'bg-cyan-200',
+  'bg-purple-200',
+  'bg-emerald-200',
+  'bg-rose-200',
+  'bg-amber-200',
 ];
 
 // Avatar colors - bright and distinct
 const avatarColors = [
   'bg-rose-400',
-  'bg-green-400',
-  'bg-blue-500',
+  'bg-emerald-400',
+  'bg-sky-400',
   'bg-lime-400',
-  'bg-fuchsia-500',
+  'bg-violet-400',
   'bg-orange-400',
   'bg-cyan-400',
-  'bg-red-500',
+  'bg-pink-400',
 ];
 
 const HomePage: React.FC = () => {
