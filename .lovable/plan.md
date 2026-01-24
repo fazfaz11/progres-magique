@@ -1,70 +1,199 @@
 
 
-# Plan : Mise à jour des couleurs pastels pour les tuiles élèves
+# Plan : Configuration PWA complète avec vite-plugin-pwa
 
 ## Objectif
-Remplacer les couleurs actuelles des tuiles élèves par des couleurs pastels plus douces et harmonieuses, correspondant au modèle "ulis-sparkle-tracker".
+Transformer l'application en une PWA complète qui fonctionne 100% hors-ligne et s'installe facilement sur le PC de la classe.
 
-## Couleurs pastels proposées
+## Ce que ça va permettre
+- L'application fonctionnera sans connexion internet
+- Un bouton "Installer" apparaîtra automatiquement dans le navigateur
+- L'application s'ouvrira comme une vraie application (sans barre d'adresse)
+- Toutes les données des élèves seront sauvegardées localement
 
-### Pour les fonds de tuiles (cardColors)
-| Couleur actuelle | Nouvelle couleur pastel | Code Tailwind |
-|------------------|------------------------|---------------|
-| bg-pink-300 | Rose pastel | `bg-pink-200` |
-| bg-blue-400 | Bleu ciel pastel | `bg-sky-200` |
-| bg-orange-300 | Pêche pastel | `bg-orange-200` |
-| bg-cyan-300 | Turquoise pastel | `bg-cyan-200` |
-| bg-purple-300 | Lavande pastel | `bg-purple-200` |
-| bg-green-300 | Menthe pastel | `bg-emerald-200` |
-| bg-rose-300 | Rose poudré | `bg-rose-200` |
-| bg-amber-300 | Jaune pastel | `bg-amber-200` |
+## Étapes d'installation sur le PC de la classe
 
-### Pour les avatars (avatarColors)
-Des couleurs légèrement plus vives pour le contraste avec le fond pastel :
-- `bg-rose-400` - Rose vif
-- `bg-emerald-400` - Vert émeraude
-- `bg-sky-400` - Bleu ciel
-- `bg-lime-400` - Vert lime
-- `bg-violet-400` - Violet
-- `bg-orange-400` - Orange
-- `bg-cyan-400` - Cyan
-- `bg-pink-400` - Rose vif
+Une fois configuré, voici comment installer l'application :
 
-## Modification technique
+1. Ouvrir Chrome ou Edge sur le PC
+2. Aller sur l'URL publiée de l'application
+3. Cliquer sur l'icône "Installer" dans la barre d'adresse (ou le menu ⋮ > "Installer l'application")
+4. L'application apparaît sur le bureau comme une vraie application
+5. Elle fonctionne ensuite sans internet !
 
-### Fichier : `src/pages/HomePage.tsx`
+---
 
-**Lignes 10-19** - Remplacer le tableau `cardColors` :
-```typescript
-const cardColors = [
-  'bg-pink-200',
-  'bg-sky-200',
-  'bg-orange-200',
-  'bg-cyan-200',
-  'bg-purple-200',
-  'bg-emerald-200',
-  'bg-rose-200',
-  'bg-amber-200',
-];
+## Modifications techniques
+
+### 1. Installer la dépendance vite-plugin-pwa
+
+**Fichier : `package.json`**
+
+Ajouter dans les devDependencies :
+```json
+"vite-plugin-pwa": "^0.20.0"
 ```
 
-**Lignes 22-31** - Ajuster le tableau `avatarColors` si nécessaire :
+### 2. Configurer Vite avec le plugin PWA
+
+**Fichier : `vite.config.ts`**
+
 ```typescript
-const avatarColors = [
-  'bg-rose-400',
-  'bg-emerald-400',
-  'bg-sky-400',
-  'bg-lime-400',
-  'bg-violet-400',
-  'bg-orange-400',
-  'bg-cyan-400',
-  'bg-pink-400',
-];
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react-swc";
+import path from "path";
+import { componentTagger } from "lovable-tagger";
+import { VitePWA } from "vite-plugin-pwa";
+
+export default defineConfig(({ mode }) => ({
+  server: {
+    host: "::",
+    port: 8080,
+    hmr: {
+      overlay: false,
+    },
+  },
+  plugins: [
+    react(),
+    mode === "development" && componentTagger(),
+    VitePWA({
+      registerType: "autoUpdate",
+      includeAssets: ["favicon.ico", "icon-192.png", "icon-512.png"],
+      manifest: {
+        name: "SUIVI DES PROGRÈS ULIS",
+        short_name: "Progrès ULIS",
+        description: "Application de suivi des progrès pour les élèves ULIS",
+        start_url: "/",
+        display: "standalone",
+        background_color: "#f8fafc",
+        theme_color: "#22c55e",
+        orientation: "any",
+        icons: [
+          {
+            src: "/icon-192.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "any maskable"
+          },
+          {
+            src: "/icon-512.png",
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable"
+          }
+        ]
+      },
+      workbox: {
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: "CacheFirst",
+            options: {
+              cacheName: "google-fonts-cache",
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 365 // 1 an
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ]
+      }
+    })
+  ].filter(Boolean),
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+}));
 ```
 
-## Rendu visuel attendu
-- Tuiles avec des fonds doux et apaisants
-- Meilleur contraste avec les avatars colorés
-- Harmonie visuelle avec le contour épais noir (`border-4 border-gray-800`)
-- Les trophées et textes restent bien lisibles sur les fonds pastels
+### 3. Enregistrer le Service Worker dans l'application
+
+**Fichier : `src/main.tsx`**
+
+Ajouter l'enregistrement du service worker :
+```typescript
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App.tsx';
+import './index.css';
+import { registerSW } from 'virtual:pwa-register';
+
+// Enregistrement du Service Worker pour le mode hors-ligne
+const updateSW = registerSW({
+  onNeedRefresh() {
+    // Optionnel : afficher un message de mise à jour disponible
+    console.log('Nouvelle version disponible');
+  },
+  onOfflineReady() {
+    console.log('Application prête pour le mode hors-ligne');
+  },
+});
+
+ReactDOM.createRoot(document.getElementById('root')!).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>,
+);
+```
+
+### 4. Ajouter les types TypeScript pour vite-plugin-pwa
+
+**Fichier : `src/vite-env.d.ts`**
+
+Ajouter la déclaration de types :
+```typescript
+/// <reference types="vite/client" />
+/// <reference types="vite-plugin-pwa/client" />
+```
+
+### 5. Nettoyer le manifest manuel (optionnel)
+
+Le fichier `public/manifest.json` peut être supprimé car le manifest sera généré automatiquement par vite-plugin-pwa.
+
+Mettre à jour `index.html` pour retirer la référence manuelle au manifest (sera ajoutée automatiquement) :
+
+**Fichier : `index.html`**
+
+Retirer cette ligne :
+```html
+<link rel="manifest" href="/manifest.json" />
+```
+
+---
+
+## Résumé des fichiers modifiés
+
+| Fichier | Action |
+|---------|--------|
+| `package.json` | Ajouter `vite-plugin-pwa` |
+| `vite.config.ts` | Configurer le plugin PWA complet |
+| `src/main.tsx` | Enregistrer le Service Worker |
+| `src/vite-env.d.ts` | Ajouter les types TypeScript |
+| `index.html` | Nettoyer la référence au manifest |
+| `public/manifest.json` | Supprimer (optionnel) |
+
+## Fonctionnement après installation
+
+```text
++-------------------+     +------------------+     +-------------------+
+|   Première        |     |   Service        |     |   Utilisation     |
+|   visite          | --> |   Worker         | --> |   hors-ligne      |
+|   (avec internet) |     |   installé       |     |   (sans internet) |
++-------------------+     +------------------+     +-------------------+
+                                   |
+                                   v
+                          +------------------+
+                          |   Données        |
+                          |   localStorage   |
+                          |   (élèves)       |
+                          +------------------+
+```
+
+L'application sera entièrement fonctionnelle sans connexion internet après la première visite !
 
