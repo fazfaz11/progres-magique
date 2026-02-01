@@ -18,11 +18,11 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
   return (
     <div className="w-full">
       {showStars && (
-        <div className="flex justify-end gap-1 mb-2">
+        <div className="flex justify-end gap-1.5 mb-2">
           {Array.from({ length: 10 }).map((_, index) => (
             <Star
               key={index}
-              className={`w-4 h-4 ${
+              className={`w-6 h-6 ${
                 index < starCount 
                   ? 'text-yellow-400 fill-yellow-400' 
                   : 'text-gray-200'
