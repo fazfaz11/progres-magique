@@ -128,9 +128,9 @@ const HomePage: React.FC = () => {
               >
                 {/* Trophy badge for top 3 - only if they have completed exercises */}
                 {showTrophy && completed > 0 && (
-                  <div className={`absolute -top-4 -left-4 w-20 h-20 rounded-full ${getTrophyBgColor(rank)} flex items-center justify-center shadow-xl border-4 border-white z-10`}>
-                    <span className="text-4xl">{trophyEmoji}</span>
-                    <span className="absolute -bottom-1 -right-1 bg-white text-lg font-black w-8 h-8 rounded-full flex items-center justify-center shadow-lg border-2 border-gray-200">
+                  <div className={`absolute -top-6 -left-6 w-24 h-24 rounded-full ${getTrophyBgColor(rank)} flex items-center justify-center shadow-xl border-4 border-white z-10`}>
+                    <span className="text-6xl">{trophyEmoji}</span>
+                    <span className="absolute -bottom-1 -right-1 bg-white text-xl font-black w-10 h-10 rounded-full flex items-center justify-center shadow-lg border-2 border-gray-200">
                       {rank}
                     </span>
                   </div>
@@ -173,11 +173,11 @@ const HomePage: React.FC = () => {
                   </div>
                   
                   {/* Stars row */}
-                  <div className="flex justify-center gap-0.5">
+                  <div className="flex justify-center gap-1">
                     {Array.from({ length: 10 }).map((_, i) => (
                       <span 
                         key={i} 
-                        className={`text-sm ${i < starsCount ? 'text-yellow-400' : 'text-gray-400/50'}`}
+                        className={`text-xl ${i < starsCount ? 'text-yellow-400' : 'text-gray-400/50'}`}
                       >
                         ★
                       </span>
