@@ -5,22 +5,75 @@ import { subjects, getTotalExercisesForSubject } from '@/data/subjects';
 
 const STORAGE_KEY = 'ulis-progress-students';
 
-export const useStudents = () => {
-  const [students, setStudents] = useState<Student[]>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-      try {
-        return JSON.parse(stored);
-      } catch {
-        return initialStudents;
-      }
+// Déclaration du type pour le bridge Electron
+declare global {
+  interface Window {
+    electronStorage?: {
+      saveStudents: (students: Student[]) => Promise<boolean>;
+      loadStudents: () => Promise<Student[] | null>;
+    };
+  }
+}
+
+// Fonction pour charger les données (Electron ou localStorage)
+const loadStudentsData = async (): Promise<Student[]> => {
+  // Mode Electron
+  if (window.electronStorage) {
+    try {
+      const data = await window.electronStorage.loadStudents();
+      if (data) return data;
+    } catch (error) {
+      console.error('Erreur chargement Electron:', error);
     }
     return initialStudents;
-  });
+  }
+  
+  // Mode navigateur (fallback localStorage)
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch {
+      return initialStudents;
+    }
+  }
+  return initialStudents;
+};
 
+// Fonction pour sauvegarder les données (Electron ou localStorage)
+const saveStudentsData = async (students: Student[]): Promise<void> => {
+  // Mode Electron
+  if (window.electronStorage) {
+    try {
+      await window.electronStorage.saveStudents(students);
+    } catch (error) {
+      console.error('Erreur sauvegarde Electron:', error);
+    }
+    return;
+  }
+  
+  // Mode navigateur (fallback localStorage)
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+};
+
+export const useStudents = () => {
+  const [students, setStudents] = useState<Student[]>(initialStudents);
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // Chargement initial des données
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
-  }, [students]);
+    loadStudentsData().then(data => {
+      setStudents(data);
+      setIsLoaded(true);
+    });
+  }, []);
+
+  // Sauvegarde automatique à chaque modification
+  useEffect(() => {
+    if (isLoaded) {
+      saveStudentsData(students);
+    }
+  }, [students, isLoaded]);
 
   const getStudent = useCallback((id: string): Student | undefined => {
     return students.find(s => s.id === id);
@@ -100,7 +153,7 @@ export const useStudents = () => {
   }, []);
 
   const addStudent = useCallback((firstName: string, lastName: string) => {
-    const newId = String(Math.max(...students.map(s => parseInt(s.id))) + 1);
+    const newId = String(Math.max(...students.map(s => parseInt(s.id)), 0) + 1);
     setStudents(prev => [...prev, { id: newId, firstName, lastName, completedExercises: {} }]);
   }, [students]);
 
@@ -140,6 +193,7 @@ export const useStudents = () => {
 
   return {
     students,
+    isLoaded,
     getStudent,
     toggleExercise,
     getProgress,
