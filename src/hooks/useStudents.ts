@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { Student } from '@/types';
 import { initialStudents } from '@/data/initialStudents';
 import { subjects, getTotalExercisesForSubject } from '@/data/subjects';
@@ -15,65 +15,48 @@ declare global {
   }
 }
 
-// Fonction pour charger les données (Electron ou localStorage)
-const loadStudentsData = async (): Promise<Student[]> => {
-  // Mode Electron
-  if (window.electronStorage) {
-    try {
-      const data = await window.electronStorage.loadStudents();
-      if (data) return data;
-    } catch (error) {
-      console.error('Erreur chargement Electron:', error);
-    }
-    return initialStudents;
-  }
-  
-  // Mode navigateur (fallback localStorage)
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored) {
-    try {
+// Chargement synchrone initial (localStorage uniquement)
+const getInitialStudents = (): Student[] => {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) {
       return JSON.parse(stored);
-    } catch {
-      return initialStudents;
     }
+  } catch {
+    // Ignore errors
   }
   return initialStudents;
 };
 
-// Fonction pour sauvegarder les données (Electron ou localStorage)
-const saveStudentsData = async (students: Student[]): Promise<void> => {
-  // Mode Electron
-  if (window.electronStorage) {
-    try {
-      await window.electronStorage.saveStudents(students);
-    } catch (error) {
-      console.error('Erreur sauvegarde Electron:', error);
-    }
-    return;
-  }
-  
-  // Mode navigateur (fallback localStorage)
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
-};
-
 export const useStudents = () => {
-  const [students, setStudents] = useState<Student[]>(initialStudents);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [students, setStudents] = useState<Student[]>(getInitialStudents);
+  const isInitialized = useRef(false);
 
-  // Chargement initial des données
+  // Chargement Electron (si disponible) après le montage
   useEffect(() => {
-    loadStudentsData().then(data => {
-      setStudents(data);
-      setIsLoaded(true);
-    });
+    if (isInitialized.current) return;
+    isInitialized.current = true;
+
+    // Si Electron est disponible, charger depuis le fichier
+    if (window.electronStorage) {
+      window.electronStorage.loadStudents().then(data => {
+        if (data) {
+          setStudents(data);
+        }
+      }).catch(console.error);
+    }
   }, []);
 
   // Sauvegarde automatique à chaque modification
   useEffect(() => {
-    if (isLoaded) {
-      saveStudentsData(students);
+    // Sauvegarder dans localStorage (toujours)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+    
+    // Sauvegarder via Electron (si disponible)
+    if (window.electronStorage) {
+      window.electronStorage.saveStudents(students).catch(console.error);
     }
-  }, [students, isLoaded]);
+  }, [students]);
 
   const getStudent = useCallback((id: string): Student | undefined => {
     return students.find(s => s.id === id);
@@ -193,7 +176,6 @@ export const useStudents = () => {
 
   return {
     students,
-    isLoaded,
     getStudent,
     toggleExercise,
     getProgress,
